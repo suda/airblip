@@ -1,0 +1,313 @@
+Application, WindowedApplication {
+   backgroundColor: #332f26;
+   borderColor: #332f26;
+   backgroundGradientAlphas: 0, 0;
+   themeColor: #ffffff;
+   color: #ffffff;
+   cornerRadius: 6;
+   fontFamily: Arial;
+   fontSize: 10;
+   fontWeight: normal;
+}
+HSlider
+{
+	showTrackHighlight: true;
+	tickLength: 0;
+}
+
+Button {
+	cornerRadius: 6;
+	textIndent: 0;
+	letterSpacing: 0;
+	highlightAlphas: 0, 0;
+	fillAlphas: 1, 1, 1, 1;
+	fillColors: #a41616, #a41616, #bd2b2b, #bd2b2b;
+	color: #ffffff;
+	textRollOverColor: #ffffff;
+	textSelectedColor: #332f26;
+	borderColor: #a41616;
+	themeColor: #a41616;
+	fontFamily: Arial;
+	fontSize: 10;
+	fontWeight: normal;   
+	               
+	upSkin:ClassReference('flexlib.skins.EnhancedButtonSkin');
+	overSkin:ClassReference('flexlib.skins.EnhancedButtonSkin');
+	downSkin:ClassReference('flexlib.skins.EnhancedButtonSkin');
+	disabledSkin:ClassReference('flexlib.skins.EnhancedButtonSkin');
+	selectedUpSkin:ClassReference('flexlib.skins.EnhancedButtonSkin');
+	selectedOverSkin:ClassReference('flexlib.skins.EnhancedButtonSkin');
+	selectedDownSkin:ClassReference('flexlib.skins.EnhancedButtonSkin');
+	selectedDisabledSkin:ClassReference('flexlib.skins.EnhancedButtonSkin'); 
+	              
+}
+
+.greyButton {
+     cornerRadii: 6, 6, 6, 6;
+     borderColors: #55524A, #55524A;     
+     selectedBorderColors: #45423C, #45423C;
+     borderThickness: 1;
+     fillColors: #55524A, #55524A;
+     fillAlphas: 1, 1;
+     fillColorRatios: 0, 255;
+     overBorderColors: #5E5B52, #5E5B52;
+     overFillColors: #5E5B52, #5E5B52;
+     overFillAlphas: 1, 1;
+     overFillColorRatios: 0, 255;
+     downBorderColors: #45423c, #45423c;
+     downFillColors: #45423c, #45423c;
+     downFillAlphas: 1, 1;
+     downFillColorRatios: 0, 255;
+     selectedFillColors: #55524A, #55524A;
+     selectedFillAlphas: 1, 1;
+     selectedFillColorRatios: 0, 255;
+     highlightAlphas: 0, 0;
+     color: #FFFFFF;
+     textRollOverColor: #FFFFFF;
+     fontSize: 10;
+}
+
+.redButton {
+     cornerRadii: 6, 6, 6, 6;
+     borderColors: #a41616, #a41616;     
+     selectedBorderColors: #45423C, #45423C;
+     borderThickness: 1;
+     fillColors: #a41616, #a41616;
+     fillAlphas: 1, 1;
+     fillColorRatios: 0, 255;
+     overBorderColors: #bd2b2b, #bd2b2b;
+     overFillColors: #bd2b2b, #bd2b2b;
+     overFillAlphas: 1, 1;
+     overFillColorRatios: 0, 255;
+     downBorderColors: #961414, #961414;
+     downFillColors: #961414, #961414;
+     downFillAlphas: 1, 1;
+     downFillColorRatios: 0, 255;
+     selectedFillColors: #55524A, #55524A;
+     selectedFillAlphas: 1, 1;
+     selectedFillColorRatios: 0, 255;
+     highlightAlphas: 0, 0;
+     color: #FFFFFF;
+     textRollOverColor: #FFFFFF;
+     downColor: #FFFFFF;
+     fontSize: 10;
+}
+
+.navButton {
+     cornerRadii: 6, 6, 6, 6;
+     borderColors: #a41616, #a41616;  
+     borderAlpha: 0;   
+     borderThickness: 1;
+     fillColors: #a41616, #a41616;
+     fillAlphas: 0, 0;
+     fillColorRatios: 0, 255;
+     overBorderColors: #bd2b2b, #bd2b2b;
+     overFillColors: #bd2b2b, #bd2b2b;
+     overFillAlphas: 1, 1;
+     overFillColorRatios: 0, 255;
+     downBorderColors: #961414, #961414;
+     downFillColors: #961414, #961414;
+     downFillAlphas: 1, 1;
+     downFillColorRatios: 0, 255;
+     selectedBorderColors: #a41616, #a41616;
+     selectedFillColors: #a41616, #a41616;
+     selectedFillAlphas: 1, 1;
+     selectedFillColorRatios: 0, 255;
+     highlightAlphas: 0, 0;
+     color: #FFFFFF;
+     textRollOverColor: #FFFFFF;
+     downColor: #FFFFFF;
+     fontSize: 10;
+}
+
+
+CheckBox {
+   highlightAlphas: 0, 0;
+   fillAlphas: 1, 1, 1, 1;
+   fillColors: #45423d, #45423d, #666666, #666666;
+   borderColor: #45423d;
+   color: #ffffff;
+   textSelectedColor: #ffffff;
+   textRollOverColor: #ffffff;
+   themeColor: #45423d;
+   fontFamily: Arial;
+   fontSize: 10;
+   icon: Embed(source="checkBox.png");
+   overIcon: Embed(source="checkBoxOver.png");
+   selectedUpIcon: Embed(source="checkBoxSelected.png"); 
+   selectedOverIcon: Embed(source="checkBoxSelectedOver.png");
+}
+
+HRule {
+   strokeColor: #65625b;
+   strokeWidth: 1;
+}
+
+ProgressBar {
+   barColor: #a41616;
+   color: #ffffff;
+   trackHeight: 20;
+   verticalGap: 0;
+   fontFamily: Arial;
+   fontSize: 10;
+   fontWeight: normal;
+	borderColor: #65625B;
+	trackColors: "[#55524a]";
+}
+
+RadioButton {
+   highlightAlphas: 0, 0;
+   fillAlphas: 1, 1, 1, 1;
+   fillColors: #45423d, #45423d, #666666, #666666;
+   borderColor: #45423d;
+   color: #ffffff;
+   textSelectedColor: #ffffff;
+   textRollOverColor: #ffffff;
+   themeColor: #45423d;
+   fontFamily: Arial;
+   fontSize: 10;
+}
+
+TabNavigator {
+   tabHeight: 16;
+   tabWidth: 50;
+   cornerRadius: 0;
+   backgroundAlpha: 1;
+   backgroundColor: #35322c;
+   borderColor: #35322c;
+   borderThickness: 0;
+   color: #ffffff;
+   dropShadowEnabled: false;
+   tabStyleName: "myTabs";
+   firstTabStyleName: "myTabs";
+   lastTabStyleName: "myTabs";
+   selectedTabTextStyleName: "mySelectedTabs";
+}
+
+.myTabs {
+   cornerRadius: 6;
+   highlightAlphas: 0, 0;
+   fillAlphas: 0, 0;
+   backgroundColor: #35322c;
+   borderColor: #35322c;
+   color: #35322c;
+   textRollOverColor: #35322c;
+   themeColor: #35322c;
+   fontFamily: Arial;
+   fontSize: 10;
+   fontWeight: bold;
+
+}
+
+.mySelectedTabs {
+   color: #ffffff;
+   textRollOverColor: #cccccc;
+   textAlign: center;
+   fontFamily: Arial;
+   fontSize: 10;
+   fontWeight: normal;
+}
+
+TextArea {
+   fontFamily: Arial;
+   fontSize: 10;
+   color: #0b333c;
+   fontWeight: normal;
+   paddingLeft: 2;
+   paddingRight: 2;
+   leading: 4;
+   textIndent: 0;
+   letterSpacing: 0;
+   backgroundAlpha: 1;
+   backgroundColor: #cac9c8;
+   borderStyle: solid;
+   borderColor: #cac9c8;
+   cornerRadius: 6;
+   dropShadowEnabled: false;
+   focusThickness: 0;
+}
+
+TextInput {
+   borderStyle: solid;
+   borderColor: #cac9c8;
+   cornerRadius: 6;
+   backgroundColor: #cac9c8;
+   color: #0b333c;
+   fontFamily: Arial;
+   fontSize: 10;
+   focusThickness: 0;
+	paddingLeft: 3;
+	paddingTop: 1;
+}
+
+ToolTip {
+   backgroundColor: #35322c;
+   color: #ffffff;
+   fontFamily: Arial;
+   fontSize: 10;
+   fontWeight: normal;
+}
+
+Tree {
+   color: #ffffff;
+}
+
+VRule {
+   strokeColor: #65625b;
+   strokeWidth: 1;
+}
+
+VScrollBar {
+   cornerRadius: 0;
+   highlightAlphas: 0, 0;
+   fillAlphas: 1, 1, 1, 1;
+   fillColors: #74716b, #74716b, #a2a09c, #a2a09c;
+   trackColors: #59554e, #59554e;
+   themeColor: #74716b;
+   borderColor: #74716b;
+   
+   upArrowUpSkin: Embed(source="scrollUpArrow.png");
+   upArrowDownSkin: Embed(source="scrollUpArrowDown.png");
+   upArrowOverSkin: Embed(source="scrollUpArrowOver.png");
+   upArrowDisabledSkin: Embed(source="scrollUpArrowDisabled.png");
+   
+   downArrowUpSkin: Embed(source="scrollDownArrow.png");
+   downArrowDownSkin: Embed(source="scrollDownArrowDown.png");
+   downArrowOverSkin: Embed(source="scrollDownArrowOver.png");
+   downArrowDisabledSkin: Embed(source="scrollDownArrowDisabled.png");
+   
+   thumbUpSkin: Embed(source="scrollThumb.png",
+   					scaleGridLeft="2", scaleGridTop="3", scaleGridRight="14", scaleGridBottom="49");
+   thumbDownSkin: Embed(source="scrollThumbDown.png",
+   					scaleGridLeft="2", scaleGridTop="3", scaleGridRight="14", scaleGridBottom="49");
+   thumbOverSkin: Embed(source="scrollThumbOver.png",
+   					scaleGridLeft="2", scaleGridTop="3", scaleGridRight="14", scaleGridBottom="49");
+}
+
+Menu {
+	openDuration: 0;
+	cornerRadius: 6;
+	backgroundColor: #45423d;
+	backgroundAlpha: 0.9;
+ 	borderColor: #65625b;
+ 	dropShadowEnabled: false;
+ 	color: #ffffff;
+ 	borderStyle: solid;
+ 	rollOverColor: #5E5B52;
+ 	baseline: 10;
+ 	separatorSkin:ClassReference('mx.controls.HRule');
+ 	checkIcon: Embed(source="check.png");
+ 	radioIcon: Embed(source="radio.png");
+}
+
+List {
+	selectionColor: #4a463d;
+	backgroundColor: #47433B;
+	rollOverColor: #423f37;					  
+}
+
+TileList {
+	selectionColor: #000000;
+	rollOverColor: #47433B;
+	backgroundColor: #47433B;
+}

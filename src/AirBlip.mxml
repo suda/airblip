@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:WindowedApplication xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
+					    width="430" height="660" showFlexChrome="false" xmlns:suda="com.suda.*"
+					    xmlns:flexlib="flexlib.controls.*"
+					    xmlns:ns2="flexlib.skins.*" xmlns:ns3="flexlib.baseClasses.*"
+					    xmlns:ns4="com.suda.AS3BlipLib.objects.*" currentState="login" xmlns:AS3BlipLib="com.suda.AS3BlipLib.*"
+					    initialize="init()" nativeDragDrop="onDrag(event)" creationComplete="loadOptions()" 
+					    applicationActivate="hasFocus = true; unreadDms = 0;" 
+					    applicationDeactivate="hasFocus = false; userNotificated = false;"
+					    closing="onAppExit(event)">
+	<mx:Style source="skins/Pownce/skin.css" />	
+    
+    <!-- Variables -->
+    <mx:Number id="transitionDuration">1000</mx:Number>
+
+	<mx:Script source="main.as" />
+	<mx:Script source="blip_api.as" />
+	<mx:Script source="os_shell.as" />
+	<mx:Script source="plugins.as" />
+	<mx:Script>
+		<![CDATA[
+			import com.suda.AS3BlipLib.objects.BlipLog;
+			import mx.effects.easing.*;
+		]]>
+	</mx:Script>
+	
+	<!-- States -->
+	<mx:states>
+		<mx:State name="login">
+			<mx:SetProperty target="{cnvStatusBar}" name="visible" value="false" />		
+			<mx:SetProperty target="{viewStack}" name="selectedIndex" value="0" />
+		</mx:State>
+		
+		<mx:State name="dashboard" enterState="api.GetDashboard()">
+			<mx:SetProperty target="{cnvStatusBar}" name="visible" value="true" />
+			<mx:SetProperty target="{viewStack}" name="selectedIndex" value="1" />			
+			<!--<mx:SetProperty target="{mnuOptions}" name="dataProvider" value="{dtaOptions}" />-->
+			<mx:SetProperty target="{btnNavDashboard}" name="selected" value="true" />
+			<mx:SetProperty target="{lstBlipLog}" name="dataProvider" value="{Dashboard}" />
+			
+		</mx:State>
+		
+		<mx:State name="subscriptions" enterState="api.GetSubsFrom()">
+			<mx:SetProperty target="{cnvStatusBar}" name="visible" value="true" />
+			<mx:SetProperty target="{viewStack}" name="selectedIndex" value="1" />
+			
+			<!--<mx:SetProperty target="{mnuOptions}" name="dataProvider" value="{dtaSubsOptions}" />-->
+			<mx:SetProperty target="{btnNavSubs}" name="selected" value="true" />
+			<mx:SetProperty target="{lstSubscriptions}" name="dataProvider" value="{Subscriptions}" />
+			<mx:SetProperty target="{lstBlipLog}" name="dataProvider" value="{new BlipLog()}" />
+		</mx:State>
+		
+		<mx:State name="bliposphere" enterState="api.GetBliposphere()">
+			<mx:SetProperty target="{cnvStatusBar}" name="visible" value="true" />
+			<mx:SetProperty target="{viewStack}" name="selectedIndex" value="1" />
+			
+			<!--<mx:SetProperty target="{mnuOptions}" name="dataProvider" value="{dtaOptions}" />-->
+			<mx:SetProperty target="{btnNavBliposphere}" name="selected" value="true" />
+			<mx:SetProperty target="{lstBlipLog}" name="dataProvider" value="{Bliposphere}" />
+		</mx:State>
+		
+		<mx:State name="plugins">
+			<mx:SetProperty target="{cnvStatusBar}" name="visible" value="true" />
+			<mx:SetProperty target="{viewStack}" name="selectedIndex" value="1" />
+			
+			<mx:SetProperty target="{btnNavPlugins}" name="selected" value="true" />
+		</mx:State>
+	</mx:states>
+	
+
+	<!-- Transitions -->
+	<mx:transitions>
+		<mx:Transition fromState="login" toState="*">
+			<mx:Sequence>
+				<mx:SetPropertyAction target="{cnvPlugins}" name="visible" value="false" />				
+				<mx:SetPropertyAction target="{cnvSubscriptions}" name="visible" value="false" />	
+			</mx:Sequence>		
+		</mx:Transition>			
+		
+		<mx:Transition fromState="dashboard" toState="plugins" effect="{fxFromBlipLogToPlugins}" />
+		<mx:Transition fromState="plugins" toState="dashboard" effect="{fxFromPluginsToBlipLog}" />
+		
+		<mx:Transition fromState="bliposphere" toState="plugins" effect="{fxFromBlipLogToPlugins}" />
+		<mx:Transition fromState="plugins" toState="bliposphere" effect="{fxFromPluginsToBlipLog}" />
+				
+		<mx:Transition fromState="dashboard" toState="subscriptions" effect="{fxFromDashboardToSubs}" />
+		<mx:Transition fromState="subscriptions" toState="dashboard" effect="{fxFromSubsToDashboard}" />
+		
+		<mx:Transition fromState="bliposphere" toState="subscriptions" effect="{fxFromBliposphereToSubs}" />
+		<mx:Transition fromState="subscriptions" toState="bliposphere" effect="{fxFromSubsToBliposphere}" />
+		
+		<mx:Transition fromState="subscriptions" toState="plugins" effect="{fxFromSubsToPlugins}" />
+		<mx:Transition fromState="plugins" toState="subscriptions" effect="{fxFromPluginsToSubs}" />
+
+	</mx:transitions>
+	
+<!-- Base Transitions effects -->
+
+	<!-- BlipLog -->
+	<mx:Move id="fxSlideInBlipLogRight" target="{cnvBlipLog}" xFrom="{-this.width}" xBy="{this.width}" 
+		     duration="{transitionDuration}" easingFunction="mx.effects.easing.Quintic.easeInOut">
+		<mx:effectStart>
+			<![CDATA[
+				cnvBlipLog.visible = true;
+			]]>
+		</mx:effectStart>
+	</mx:Move>	
+	<mx:Move id="fxSlideOutBlipLogLeft" target="{cnvBlipLog}" xFrom="0" xBy="{-this.width}" 
+		     duration="{transitionDuration}" easingFunction="mx.effects.easing.Quintic.easeInOut">
+		<mx:effectEnd>
+			<![CDATA[
+				cnvBlipLog.visible = false;
+				cnvNewPost.visible = false; 
+			]]>
+		</mx:effectEnd>
+	</mx:Move>
+	
+	<!-- New Post -->
+	<mx:Move id="fxSlideInNewPostLeft" target="{cnvNewPost}" xFrom="{this.width}" xBy="{-this.width}" duration="{transitionDuration}" 
+			 easingFunction="mx.effects.easing.Quintic.easeInOut">
+		<mx:effectStart>
+			<![CDATA[
+				cnvNewPost.visible = true; 
+			]]>
+		</mx:effectStart>
+	</mx:Move>
+	<mx:Move id="fxSlideInNewPostRight" target="{cnvNewPost}" xFrom="{-this.width}" xBy="{this.width}" duration="{transitionDuration}" 
+			 easingFunction="mx.effects.easing.Quintic.easeInOut">
+		<mx:effectStart>
+			<![CDATA[
+				cnvNewPost.visible = true; 
+			]]>
+		</mx:effectStart>
+	</mx:Move>	
+	<mx:Move id="fxSlideOutNewPostLeft" target="{cnvNewPost}" xFrom="0" xBy="{-this.width}" duration="{transitionDuration}" 
+			 easingFunction="mx.effects.easing.Quintic.easeInOut">
+		<mx:effectEnd>
+			<![CDATA[
+				cnvNewPost.visible = false; 
+			]]>
+		</mx:effectEnd>
+	</mx:Move>
+	<mx:Move id="fxSlideOutNewPostRight" target="{cnvNewPost}" xFrom="0" xBy="{this.width}" duration="{transitionDuration}" 
+			 easingFunction="mx.effects.easing.Quintic.easeInOut">
+		<mx:effectEnd>
+			<![CDATA[
+				cnvNewPost.visible = false; 
+			]]>
+		</mx:effectEnd>
+	</mx:Move>
+	
+	<!-- Subscriptions -->
+	<mx:Move id="fxSlideInSubsLeft" target="{cnvSubscriptions}" xFrom="{this.width}" xBy="{-this.width}" duration="{transitionDuration}" 
+			 easingFunction="mx.effects.easing.Quintic.easeInOut">
+		<mx:effectStart>
+			<![CDATA[
+				cnvSubscriptions.visible = true; 
+			]]>
+		</mx:effectStart>
+	</mx:Move>
+	<mx:Move id="fxSlideInSubsRight" target="{cnvSubscriptions}" xFrom="{-this.width}" xBy="{this.width}" duration="{transitionDuration}" 
+			 easingFunction="mx.effects.easing.Quintic.easeInOut">
+		<mx:effectStart>
+			<![CDATA[
+				cnvSubscriptions.visible = true; 
+			]]>
+		</mx:effectStart>
+	</mx:Move>	
+	<mx:Move id="fxSlideOutSubsLeft" target="{cnvSubscriptions}" xFrom="0" xBy="{-this.width}" duration="{transitionDuration}" 
+			 easingFunction="mx.effects.easing.Quintic.easeInOut">
+		<mx:effectEnd>
+			<![CDATA[
+				cnvSubscriptions.visible = false; 
+			]]>
+		</mx:effectEnd>
+	</mx:Move>
+	<mx:Move id="fxSlideOutSubsRight" target="{cnvSubscriptions}" xFrom="0" xBy="{this.width}" duration="{transitionDuration}" 
+			 easingFunction="mx.effects.easing.Quintic.easeInOut">
+		<mx:effectEnd>
+			<![CDATA[
+				cnvSubscriptions.visible = false; 
+			]]>
+		</mx:effectEnd>
+	</mx:Move>
+	
+	<!-- Plugins -->
+	<mx:Move id="fxSlideInPluginsLeft" target="{cnvPlugins}" xFrom="{this.width}" xBy="{-this.width}" duration="{transitionDuration}" 
+			 easingFunction="mx.effects.easing.Quintic.easeInOut">
+		<mx:effectStart>
+			<![CDATA[
+				 cnvPlugins.visible = true;
+			]]>
+		</mx:effectStart>
+	</mx:Move>
+	<mx:Move id="fxSlideOutPluginsRight" target="{cnvPlugins}" xFrom="0" xBy="{this.width}" duration="{transitionDuration}" 
+			 easingFunction="mx.effects.easing.Quintic.easeInOut">
+		<mx:effectEnd>
+			<![CDATA[
+				 cnvPlugins.visible = false;
+			]]>
+		</mx:effectEnd>
+	</mx:Move>
+	
+	<!-- Composite Transitions effects -->
+	<mx:Parallel id="fxFromBlipLogToPlugins" children="{[fxSlideOutBlipLogLeft, fxSlideOutNewPostLeft, fxSlideInPluginsLeft]}"/>
+	<mx:Parallel id="fxFromPluginsToBlipLog" children="{[fxSlideInBlipLogRight, fxSlideInNewPostRight, fxSlideOutPluginsRight]}" />
+	
+	<mx:Parallel id="fxFromDashboardToSubs" children="{[fxSlideOutNewPostLeft, fxSlideInSubsLeft]}" />	
+	<mx:Parallel id="fxFromSubsToDashboard" children="{[fxSlideInNewPostRight, fxSlideOutSubsRight]}" />
+	
+	<mx:Parallel id="fxFromBliposphereToSubs" children="{[fxSlideOutNewPostRight, fxSlideInSubsRight]}" />
+	<mx:Parallel id="fxFromSubsToBliposphere" children="{[fxSlideInNewPostLeft, fxSlideOutSubsLeft]}" />	
+	
+	<mx:Parallel id="fxFromPluginsToSubs" children="{[fxSlideInBlipLogRight, fxSlideInSubsRight, fxSlideOutPluginsRight]}" />
+	<mx:Parallel id="fxFromSubsToPlugins" children="{[fxSlideOutBlipLogLeft, fxSlideOutSubsLeft, fxSlideInPluginsLeft]}" />
+	
+	<!-- Other Effects -->
+	<mx:Sequence id="fxFade" repeatCount="10" target="{imgLogo}" >
+		<mx:Fade alphaFrom="0.5" alphaTo="1" />
+		<mx:Fade alphaFrom="1" alphaTo="0.5" />			
+	</mx:Sequence>
+	<mx:Fade alphaFrom="0" alphaTo="1" duration="200" id="fxFadeIn" />
+	<mx:GlowFilter id="fxGlowRed" color="#a41616" />
+	<mx:GlowFilter id="fxGlowWhite" color="#ffffff" />
+	<mx:ColorMatrixFilter id="fxDesaturate">
+		<mx:matrix>
+			<mx:Array>
+				<mx:Number>0.2225</mx:Number>
+				<mx:Number>0.7169</mx:Number>
+				<mx:Number>0.0606</mx:Number>
+				<mx:Number>0</mx:Number>
+				<mx:Number>0</mx:Number>				
+				<mx:Number>0.2225</mx:Number>
+				<mx:Number>0.7169</mx:Number>
+				<mx:Number>0.0606</mx:Number>
+				<mx:Number>0</mx:Number>
+				<mx:Number>0</mx:Number>				
+				<mx:Number>0.2225</mx:Number>
+				<mx:Number>0.7169</mx:Number>
+				<mx:Number>0.0606</mx:Number>
+				<mx:Number>0</mx:Number>
+				<mx:Number>0</mx:Number>				
+				<mx:Number>0</mx:Number>
+				<mx:Number>0</mx:Number>
+				<mx:Number>0</mx:Number>
+				<mx:Number>1</mx:Number>
+				<mx:Number>0</mx:Number>
+			</mx:Array>
+		</mx:matrix>
+	</mx:ColorMatrixFilter>
+
+	<!-- Options menu -->
+	<mx:Array id="dtaOptions">
+		<mx:Object label="Więcej opcji..." />
+		<mx:Object type="separator" />
+		<mx:Object label="Pokazuj kokpit" type="radio" groupName="showWhat" toggled="true" />
+		<mx:Object label="Pokazuj bliplog" type="radio" groupName="showWhat" />
+		<mx:Object type="separator" />
+		<mx:Object label="Wyłącz dźwięki" type="check" />
+	</mx:Array>
+	
+	<mx:Array id="dtaSubsOptions">
+		<mx:Object label="Więcej opcji..." />
+		<mx:Object type="separator" />
+		<mx:Object label="Obserwowani" type="radio" groupName="showWho" toggled="true" />
+		<mx:Object label="Obserwujący" type="radio" groupName="showWho" />
+		<mx:Object type="separator" />
+		<mx:Object label="Pokazuj kokpit" type="radio" groupName="showWhat" toggled="true" />
+		<mx:Object label="Pokazuj bliplog" type="radio" groupName="showWhat" />
+		<mx:Object type="separator" />
+		<mx:Object label="Wyłącz dźwięki" type="check" />
+	</mx:Array>
+	
+	<mx:Array id="dtaFiltersOptions">
+		<mx:Object label="Więcej opcji..." />
+		<mx:Object type="separator" />
+		<mx:Object label="Wyłącz dźwięki" type="check" />
+	</mx:Array>
+	
+	<mx:Array id="dtaTmpMenu">
+		<mx:Object label="Wyłącz dźwięki" type="check" id="mnuMute" toggled="false" />
+	</mx:Array>
+	
+	<mx:Canvas borderStyle="solid" cornerRadius="6" backgroundColor="#332f26" borderColor="#332f26" 
+			   left="5" top="5" bottom="5" right="5" id="cnvMain">
+		<mx:filters>
+			<mx:DropShadowFilter blurX="6" blurY="6" alpha="0.5" distance="0" quality="4" />
+		</mx:filters>
+			   
+	<!-- Chrome -->
+		<mx:Image x="6" y="6" source="img/air_blip16.png" id="imgLogo" />
+				
+		<mx:Image x="26" y="3" source="@Embed(source='../assets/airblip.png')"/>
+		<mx:Label x="78" y="6" text="Release Candidate 1" color="#5C5850" id="lblTitle"/>
+		
+		<mx:Button styleName="greyButton" width="16" height="16" click="this.close()" right="6" top="6" 
+			icon="@Embed(source='../assets/close.png')"/>
+		<mx:Button styleName="greyButton" width="16" height="16" click="this.minimize()" right="28" top="6" 
+			icon="@Embed(source='../assets/minimize.png')"/>			   
+		<mx:Canvas height="28" left="0" top="0" right="46" mouseDown="this.stage.nativeWindow.startMove()" >
+		</mx:Canvas>
+	<!-- /Chrome -->	
+	
+	<!-- Content -->	
+		<mx:ViewStack id="viewStack" left="0" right="0" bottom="28" top="29" selectedIndex="1">
+		<!-- Login panel -->
+			<mx:Canvas label="Login View" width="100%" height="100%" id="canvas2">
+				<mx:Canvas width="240" height="186" horizontalCenter="0" verticalCenter="0" borderStyle="solid" 
+						   borderColor="#47433B" cornerRadius="6" backgroundColor="#47433B" 
+						   creationComplete="initLoginPanel()">
+					<mx:keyUp>
+						<![CDATA[
+							if (13 == event.keyCode) {
+								logIn();	
+							}
+						]]>
+					</mx:keyUp>
+					<mx:Label x="20" y="20" text="Login" />
+					<mx:Label x="20" y="72" text="Hasło"/>
+					<mx:TextInput x="20" y="39" width="200" id="taLoginUsername"/>
+					<mx:TextInput x="20" y="91" width="200" id="taLoginPasswd" displayAsPassword="true"/>
+					<mx:CheckBox x="20" y="121" label="Zapamiętaj logowanie" id="cbLoginRemember" />
+					<mx:Button x="158" y="144" label="Zaloguj" styleName="redButton" click="logIn()" id="btnLogIn" />
+				</mx:Canvas>
+			</mx:Canvas>
+
+			<mx:Canvas label="Main View" width="100%" height="100%" horizontalScrollPolicy="off">
+				<!-- NavBar -->
+				<mx:Canvas y="6" height="31" id="cnvNavBar" left="0" right="0">
+					<mx:Button x="6" y="0" label="Kokpit" icon="@Embed(source='../assets/dashboard.png')" 
+						       id="btnNavDashboard" styleName="navButton" click="this.currentState = 'dashboard'" />
+						       					
+					<mx:Button x="87" y="0" label="Subskrypcje" icon="@Embed(source='../assets/subscriptions.png')" 
+						       id="btnNavSubs" styleName="navButton" click="this.currentState = 'subscriptions'" />
+						       
+					<mx:Button x="194" y="0" label="Bliposfera" icon="@Embed(source='../assets/bliposphere.png')" 
+						       id="btnNavBliposphere" styleName="navButton" click="this.currentState = 'bliposphere'" />
+						       
+					<mx:Button x="293" y="0" label="Wtyczki" icon="@Embed(source='../assets/plugins.png')" 
+						       id="btnNavPlugins" styleName="navButton" click="this.currentState = 'plugins'" visible="false" />
+						       
+					<mx:HRule y="30" left="0" right="0"/>
+				</mx:Canvas>
+				
+				<!-- New Post -->
+				<mx:Canvas y="42" height="95" id="cnvNewPost" left="0" right="0">				    
+					<mx:TextArea id="taStatus" right="72" left="6" top="0" height="88" maxChars="160" 
+							     verticalScrollPolicy="off" horizontalScrollPolicy="off" change="onStatusChange(event)"
+							     keyDown="onStatusKeyUp(event)">
+					</mx:TextArea>
+					<mx:Label id="lblCharsLeft" right="74" top="70" color="#000000" textAlign="right" text="160" fontWeight="bold" />					
+					<mx:Canvas width="60" height="60" right="6" top="0" backgroundColor="#45423D" cornerRadius="6" 
+							   borderStyle="solid" borderColor="#45423D" nativeDragEnter="onDragIn(event)"
+							   click="FileAttachement.browse(AttachementTypes)" id="cnvAttachement">
+						<mx:Image source="@Embed(source='../assets/picture.png')" width="16" height="16" id="imgAttachement" 
+								  horizontalCenter="0" verticalCenter="0" filters="{[fxDesaturate]}"/>
+								  
+						<mx:Image source="@Embed(source='../assets/delete.png')" width="10" height="10" id="imgDel" 
+								  right="3" top="3" visible="false" click="onDelAttachement(event)" />
+					</mx:Canvas>
+					<mx:Button label="Wyślij" right="6" width="60" bottom="7" styleName="redButton" id="btnSend"
+							 click="onStatusSet(null)"	/>
+					<mx:HRule y="94" left="0" right="0"/>
+				</mx:Canvas>
+				
+				<!-- Subscriptions -->
+				<mx:Canvas y="37" height="100" id="cnvSubscriptions" left="0" right="0" backgroundColor="#47433B" horizontalScrollPolicy="off">
+					<suda:CustomTileList left="0" right="0" top="0" bottom="90" borderStyle="none"
+								 itemRenderer="SubscriptionsItemRenderer" id="lstSubscriptions" backgroundAlpha="0"
+								 change="onChangeSub(event)">
+								 
+					</suda:CustomTileList>				    
+					<mx:HRule y="99" left="0" right="0"/>
+				</mx:Canvas>
+				
+				<!-- BlipLog -->
+				<mx:Canvas id="cnvBlipLog" left="0" right="0" bottom="0" top="137" >				   
+					<mx:List id="lstBlipLog" left="0" right="0" top="0" bottom="0" borderStyle="none" backgroundAlpha="0" 
+							 itemRenderer="UpdateItemRenderer"
+							 paddingTop="0" paddingRight="0" paddingBottom="0" paddingLeft="0">
+					</mx:List>					
+				</mx:Canvas>
+				
+				<!-- Plugins -->
+				<mx:Canvas id="cnvPlugins" left="0" right="0" backgroundColor="#47433B" bottom="0" top="37" verticalScrollPolicy="on">
+					<mx:Button label="openPluginWindow('VideoPlayer')" left="6" top="6" click="pluginHost.openPluginWindow('VideoPlayer');" />
+				</mx:Canvas>
+				
+			</mx:Canvas>
+		</mx:ViewStack>				
+	<!-- /Content -->
+	
+			
+	<!-- Status bar -->			
+<!--	
+		<flexlib:ScrollableMenu x="6" bottom="34" id="mnuOptions" verticalAlign="top" showEffect="fxFadeIn" 
+								variableRowHeight="true" dataProvider="{dtaTmpMenu}" itemClick="onMenuClick(event)"/>
+-->								
+
+		<mx:Canvas left="0" right="0" height="27" bottom="0" id="cnvStatusBar">
+			<mx:HRule left="0" right="0" bottom="26"/>
+			<mx:Image width="16" height="16" source="@Embed(source='../assets/options.png')" bottom="6" left="6" 
+				click="mnuOptions.show(10, this.height - 60)"/>
+			
+			<mx:VRule height="16" left="28" bottom="6"/>
+			
+			<mx:Label text="Ajdluje" bottom="4" left="32" id="lblStatusBar" color="#989692"/>
+		</mx:Canvas>
+		<mx:Image width="15" height="15" source="@Embed(source='../assets/grip.png')" right="2" bottom="2"
+			      mouseDown="this.stage.nativeWindow.startResize()" />
+
+	<!-- /Status bar -->				   
+			   
+	</mx:Canvas>
+</mx:WindowedApplication>

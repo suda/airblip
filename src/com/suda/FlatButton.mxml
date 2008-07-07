@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" borderStyle="solid" borderThickness="1"
+		   creationComplete="init()" mouseOver="over()" mouseOut="out()" mouseDown="down()" mouseUp="out()">
+	<mx:Number id="overColor" />
+	<mx:Number id="downColor" />
+	<mx:Number id="cornerRadius" />
+	
+	<mx:Script>
+		<![CDATA[
+			
+			private var baseColor:uint;
+			
+			private function init():void {
+				super.setStyle('borderColor', super.getStyle('backgroundColor'));				
+				this.baseColor = super.getStyle('backgroundColor');
+				super.setStyle('cornerRadius', this.cornerRadius);
+								
+			}	
+			
+			private function over():void {
+				super.setStyle('borderColor', this.overColor);
+				super.setStyle('backgroundColor', this.overColor)				
+			}
+			
+			private function out():void {
+				super.setStyle('borderColor', this.baseColor);
+				super.setStyle('backgroundColor', this.baseColor)				
+			}
+			
+			private function down():void {
+				super.setStyle('borderColor', this.downColor);
+				super.setStyle('backgroundColor', this.downColor)				
+			}
+		]]>
+	</mx:Script>
+	<!--<mx:Label text="{this.label}" color="{this.color}" left="5" right="5" top="-2" bottom="0" textAlign="center"/>-->
+</mx:Canvas>

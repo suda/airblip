@@ -1,0 +1,3 @@
+-Added [Bindable] metatags
+-Added IOError, Complete and Open events
+-Disabled query cacheing
