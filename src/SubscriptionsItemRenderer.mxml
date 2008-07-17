@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:qs="com.qs.controls.*" width="42" height="42" cornerRadius="8"
-	       mouseOut="this.parentDocument.onItemRollOut(this)" 
-	       mouseOver="this.parentDocument.onItemRollOver(this)">
-	       
-	<qs:SuperImage source="{data.trackedUser.avatar.url30}" borderStyle="none" x="6" y="5" width="30" height="30" />
-	<qs:SuperImage source="@Embed(source='skins/Pownce/avatarBorder.png')" x="0" y="0"  borderStyle="none" width="42" height="42" />
-</mx:Canvas>
