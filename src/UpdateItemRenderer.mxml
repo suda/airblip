@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="90" fontFamily="Arial" 
+		   xmlns:suda="com.suda.*"
+		   xmlns:qs="com.qs.controls.*">
+	<mx:Script>
+		<![CDATA[
+			import com.suda.AS3BlipLib.objects.*;
+			
+			private var linkColor:String = '#777777';
+			
+			private function loginFromPath(text:String):String {
+				return text.split('/').pop();
+			}		
+			
+			private function setDmRecipient():void {
+				if ('' == this.recipient) {
+					this.parentApplication.taStatus.text = '>'+loginFromPath(this.login)+' '
+				} else {
+					if (loginFromPath(this.login) == this.parentApplication.api.username) {
+						this.parentApplication.taStatus.text = '>'+loginFromPath(this.recipient)+' '
+					} else {
+						this.parentApplication.taStatus.text = '>'+loginFromPath(this.login)+' '
+					}
+				}
+				this.parentApplication.onStatusChange(null);
+				this.parentApplication.taStatus.setFocus();
+				this.parentApplication.taStatus.selectionEndIndex = 
+					this.parentApplication.taStatus.selectionBeginIndex = 
+					this.parentApplication.taStatus.text.length;
+				
+			
+			}
+						
+		]]>
+	</mx:Script>
+	<mx:String id="login">{data.userPath}</mx:String>
+	<mx:String id="recipient">{data.recipientPath}</mx:String>
+	
+	<qs:SuperImage width="30" height="30" top="6" source="{data.user.avatar.url30}" doubleClickEnabled="true" 
+		 right="10" borderStyle="none" />
+		 
+	<qs:SuperImage source="@Embed(source='skins/Pownce/avatarBorder.png')" top="1" right="4" borderStyle="none" />
+	
+	<mx:Text htmlText="{data.htmlBody}" 
+			 left="6" right="44" bottom="16" top="0" fontSize="12" 
+			 link="this.parentApplication.onBlipLogPlugin(event)" />
+	
+	<!--		 
+	<mx:HTML left="6" right="44" bottom="16" top="0" htmlText="{data.htmlBody}" backgroundAlpha="0"
+		 	  paintsDefaultBackground="false" />
+	-->
+	<mx:Text htmlText="{data.createdAt+' przez '+data.transport.name}" 
+			 bottom="0" width="200" color="#dddddd" fontWeight="normal" x="6" height="18"/>
+			 		
+	<mx:Button width="18" height="18" bottom="6" right="90" cornerRadius="4" styleName="greyButton" click="navigateToURL(new URLRequest('http://blip.pl/s/'+data.id))"
+			   icon="@Embed(source='../assets/link.png')"	 />
+	
+	<mx:Button right="6" bottom="6" height="18" width="80" label="Odpowiedz" cornerRadius="4" styleName="greyButton"
+			   visible="{('subscriptions' != this.parentApplication.currentState)}"
+			    click="setDmRecipient()"/>
+	<mx:HRule left="0" right="0" bottom="0" />
+</mx:Canvas>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin>
+  <name>Odtwarzacz wideo</name>
+  <version>0.1</version>
+  <author>Wojtek 'suda' Siudzinski</author>
+  <description>Wtyczka umożliwia oglądanie filmów z YouTube bez otwierania okna przeglądarki</description>
+  <url>http://www.airblip.pl</url>  
+    
+  <width>720</width>
+  <height>420</height>
+  <hasWindow>true</hasWindow>
+</plugin>
