@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:WindowedApplication xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
-					    width="430" height="660" showFlexChrome="false" xmlns:suda="com.suda.*"
+					    xmlns:suda="com.suda.*"
 					    xmlns:flexlib="flexlib.controls.*"
-					    xmlns:ns2="flexlib.skins.*" xmlns:ns3="flexlib.baseClasses.*"
-					    xmlns:ns4="com.suda.AS3BlipLib.objects.*" currentState="login" xmlns:AS3BlipLib="com.suda.AS3BlipLib.*"
+					    xmlns:ns2="flexlib.skins.*"
+					    xmlns:ns3="flexlib.baseClasses.*"
+					    xmlns:ns4="com.suda.AS3BlipLib.objects.*"
+					    xmlns:AS3BlipLib="com.suda.AS3BlipLib.*"
+					    currentState="login" width="430" height="660" showFlexChrome="false" 
 					    initialize="init()" nativeDragDrop="onDrag(event)" creationComplete="loadOptions()" 
 					    applicationActivate="hasFocus = true; unreadDms = 0;" 
 					    applicationDeactivate="hasFocus = false; userNotificated = false;"
@@ -391,12 +394,7 @@
 	<!-- /Content -->
 	
 			
-	<!-- Status bar -->			
-<!--	
-		<flexlib:ScrollableMenu x="6" bottom="34" id="mnuOptions" verticalAlign="top" showEffect="fxFadeIn" 
-								variableRowHeight="true" dataProvider="{dtaTmpMenu}" itemClick="onMenuClick(event)"/>
--->								
-
+	<!-- Status bar -->				
 		<mx:Canvas left="0" right="0" height="27" bottom="0" id="cnvStatusBar">
 			<mx:HRule left="0" right="0" bottom="26"/>
 			<mx:Image width="16" height="16" source="@Embed(source='../assets/options.png')" bottom="6" left="6" 
@@ -405,9 +403,10 @@
 			<mx:VRule height="16" left="28" bottom="6"/>
 			
 			<mx:Label text="Ajdluje" bottom="4" left="32" id="lblStatusBar" color="#989692"/>
+			
+			<mx:Image width="15" height="15" source="@Embed(source='../assets/grip.png')" right="2" bottom="2"
+				      mouseDown="this.stage.nativeWindow.startResize()" />	
 		</mx:Canvas>
-		<mx:Image width="15" height="15" source="@Embed(source='../assets/grip.png')" right="2" bottom="2"
-			      mouseDown="this.stage.nativeWindow.startResize()" />
 
 	<!-- /Status bar -->				   
 			   

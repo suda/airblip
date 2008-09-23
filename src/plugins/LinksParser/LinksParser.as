@@ -32,17 +32,17 @@ package plugins.LinksParser
 					if (BlipUpdate.UPDATE_TYPE_STATUS == item.type) {	
 											
 						loginStr = '<a href="http://www.blip.pl/users/'+loginFromPath(item.userPath)+
-								   '/dashboard"><font color="'+linkColor+'"><b>'+
-								   loginFromPath(item.userPath) + '</b></font></a>: ';
+								   '/dashboard" class="login" target="_blank">'+
+								   loginFromPath(item.userPath) + '</a>: ';
 					} else {
 						loginStr = '<a href="http://www.blip.pl/users/'+loginFromPath(item.userPath)+
-								   '/dashboard"><font color="'+linkColor+'"><b>'+
-								   loginFromPath(item.userPath) + '</b></font></a> > ' +
+								   '/dashboard" class="login" target="_blank">'+
+								   loginFromPath(item.userPath) + '</a> &gt; ' +
 								   '<a href="http://www.blip.pl/users/'+loginFromPath(item.recipientPath)+
-								   '/dashboard"><font color="'+linkColor+'"><b>'+
-								   loginFromPath(item.recipientPath)+ '</b></font></a>: ';
+								   '/dashboard" class="login" target="_blank">'+
+								   loginFromPath(item.recipientPath)+ '</a>: ';
 					}
-					
+					out = htmlspecialchars(out);
 					out = parseLinks(out);
 					out = parseTags(out);
 					out = parseUsers(out);
@@ -51,6 +51,11 @@ package plugins.LinksParser
 			}	
 		}
 		
+		public function htmlspecialchars(str:String):String {
+			str = str.replace(/\</g, "&lt;");
+			str = str.replace(/\>/g, "&gt;");
+			return str;
+		}
 			
 		private function noPl(text:String):String {
 			var out:String = text;
@@ -87,18 +92,19 @@ package plugins.LinksParser
 				formatedOut = formatedOut.toLowerCase();
 				
 				out = out.replace(new RegExp('(?<!\")\#'+result, 'g'), 
-					  '<a href="http://www.blip.pl/tags/'+formatedOut+'"><font color="'+linkColor+'">#'+result+'</font></a>');	
+					  '<a href="http://www.blip.pl/tags/'+formatedOut+'" target="_blank">#'+result+'</a>');	
 			}
 			
 			return out;	
 		}
 		
 		private function parseUsers(text:String):String {
-			return text.replace(/\^(\w+)/g, '<a href="http://www.blip.pl/users/$1/dashboard"><font color="'+linkColor+'">^$1</font></a>');
+			return text.replace(/\^(\w+)/g, '<a href="http://www.blip.pl/users/$1/dashboard" target="_blank">^$1</a>');
 		}
 		
 		private function parseLinks(text:String):String {
-			return text.replace(/(?<!\!)((http[s]?|ftp|ssh)\:\/\/(\S+))/gi, '<a href="$2://$3"><font color="'+linkColor+'">$1</font></a>');
+			//return text.replace(/(?<!\!)((http[s]?|ftp|ssh)\:\/\/([\S|^\]]+))/gi, '<a href="$2://$3" target="_blank">$1</a>');
+			return text.replace(/(([a-zA-Z]+\:\/\/)([a-zA-Z0-9?&%\.;:\/=\+_-]*))/gi, '<a href="$1" target="_blank">$1</a>');
 		}
 		
 		private function loginFromPath(text:String):String {

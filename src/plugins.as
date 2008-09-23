@@ -1,6 +1,5 @@
 import com.suda.plugins.*;
 
-import flash.events.Event;
 import flash.events.TextEvent;
 
 var pluginHost:PluginHost = new PluginHost();

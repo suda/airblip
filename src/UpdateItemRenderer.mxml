@@ -5,6 +5,7 @@
 	<mx:Script>
 		<![CDATA[
 			import com.suda.AS3BlipLib.objects.*;
+			import com.carlcalderon.arthropod.Debug;
 			
 			private var linkColor:String = '#777777';
 			
@@ -30,25 +31,59 @@
 				
 			
 			}
+			
+			/********* Function from http://soenkerohde.com/2008/09/air-html-with-_blank-links/ *********/ 
+			private function onComplete(e:Event):void
+			{
+				var document:Object = HTML(e.currentTarget).htmlLoader.window.document;
+				var anchors:Object = document.getElementsByTagName("a");
+ 
+				for(var i:Number=0; i < anchors.length; i++) {
+					var a:Object = anchors[i];
+ 
+					// Check if anchor has target and if it is _blank so it should be handled seperatly
+					var targetAttr:Object = a.attributes.getNamedItem("target");
+					if(targetAttr != null && targetAttr.nodeValue == "_blank")
+					{
+						var urlAttr:Object = a.attributes.getNamedItem("href");
+ 
+						a.onmouseup = function(o:Object):void{
+							o.preventDefault();
+							navigateToURL(new URLRequest(o.srcElement), "_blank");
+						};
+					}
+				}
+			}
 						
 		]]>
 	</mx:Script>
 	<mx:String id="login">{data.userPath}</mx:String>
 	<mx:String id="recipient">{data.recipientPath}</mx:String>
+	<mx:String id="htmlStart">
+		<![CDATA[
+				<html><meta><link rel="stylesheet" type="text/css" href="app:/skins/Pownce/updates.css"></meta><body>
+		]]>
+	</mx:String>
+	<mx:String id="htmlEnd">
+		<![CDATA[
+				</body></html>
+		]]>
+	</mx:String>
 	
 	<qs:SuperImage width="30" height="30" top="6" source="{data.user.avatar.url30}" doubleClickEnabled="true" 
 		 right="10" borderStyle="none" />
 		 
 	<qs:SuperImage source="@Embed(source='skins/Pownce/avatarBorder.png')" top="1" right="4" borderStyle="none" />
-	
-	<mx:Text htmlText="{data.htmlBody}" 
+	<!--
+	<mx:Text htmlText="{data.htmlBody}" id="content" 
 			 left="6" right="44" bottom="16" top="0" fontSize="12" 
 			 link="this.parentApplication.onBlipLogPlugin(event)" />
-	
-	<!--		 
-	<mx:HTML left="6" right="44" bottom="16" top="0" htmlText="{data.htmlBody}" backgroundAlpha="0"
-		 	  paintsDefaultBackground="false" />
 	-->
+				 
+	<mx:HTML left="6" right="44" bottom="16" top="0" htmlText="{htmlStart+data.htmlBody+htmlEnd}" backgroundAlpha="0"
+		 	  paintsDefaultBackground="false" complete="onComplete(event)" />
+	
+		 	  
 	<mx:Text htmlText="{data.createdAt+' przez '+data.transport.name}" 
 			 bottom="0" width="200" color="#dddddd" fontWeight="normal" x="6" height="18"/>
 			 		

@@ -55,8 +55,6 @@ public function init():void {
 	api.addEventListener(BlipResultEvent.ON_GET_DASHBOARD, onGetDashboard);
 	api.addEventListener(BlipResultEvent.ON_GET_USER_DASHBOARD, onGetUserDashboard);
 	api.addEventListener(BlipResultEvent.ON_GET_BLIPOSPHERE, onGetBliposphere);
-	//api.addEventListener(BlipResultEvent.ON_GET_USER, onGetUser);
-	//api.addEventListener(BlipResultEvent.ON_GET_AVATAR, onGetAvatar);	
 	api.addEventListener(BlipResultEvent.ON_GET_SUBS_FROM, onGetSubs);
 	api.addEventListener(BlipResultEvent.ON_SEND_UPDATE, onSendUpdate);
 	
@@ -91,9 +89,14 @@ public function init():void {
 	pluginHost.api = api;
 	pluginHost.queryPlugins();
 	// Hack: Module preloading in Windows
+	pluginHost.loadAllPlugins();
+	/* 
 	if (NativeApplication.supportsSystemTrayIcon) {
 		pluginHost.loadAllPlugins();
-	}			
+	}
+	 */
+	//loginToBlipPl();
+	//getBlipPl();			
 }
 
 public function updaterVersionCheckHandler(event:AIRRemoteUpdaterEvent):void {
@@ -446,57 +449,14 @@ public function onChangeSub(event:ListEvent):void {
 	lstBlipLog.dataProvider = userDashboard;
 }
 
-
-/**********************************************************/
-/*********** FUNKCJE AGREGUJĄCE                 ***********/
-/**********************************************************/
-/* 
-public function fetchUsers(blipLog:*):void {
-	var dashboard:* = lstBlipLog.dataProvider;
-	var statusesWithoutUser:CustomArrayCollection = dashboard.getAllBy('user', null);	
-	if ((null != statusesWithoutUser) && (0 < statusesWithoutUser.length)) {
-		
-		for each (var update:Object in statusesWithoutUser) {
-			if (null == update.user) {
-				if (!usersQueue.contains(update.userPath)) {
-					api.GetUserByPath(update.userPath);
-					usersQueue.addItem(update.userPath);										
-				} else {					
-					dashboard.setAllBy('userPath', update.userPath, 'user', users.getBy('userPath', update.userPath));	
-				}
-			}
-			
-			if ((BlipUpdate.UPDATE_TYPE_DM == update.type) && (null == update.recipient)) {
-				if (!usersQueue.contains(update.recipientPath)) {
-					api.GetUserByPath(update.recipientPath);
-					usersQueue.addItem(update.recipientPath);										
-				} else {					
-					dashboard.setAllBy('recipientPath', update.recipientPath, 'recipient', users.getBy('userPath', update.recipientPath));	
-				}			
-			}
-		}
-	}	
-}
-
-public function fetchAvatar(user:BlipUser):void {
-	if (null != user.avatarPath) {
-		api.GetAvatarByPath(user.avatarPath);
-	} else {
-		// ustawienie domyślnego av
-		user.avatar = new BlipAvatar;
-		user.avatar.url50 = 'app:/img/not_logged50.png';
-		user.avatar.url30 = 'app:/img/not_logged30.png';
-		user.avatar.url15 = 'app:/img/not_logged15.png';
+public function onAppExit(event:Event):void {
+	if (this.visible) { 
+		config.data.windowX = this.nativeWindow.x;
+		config.data.windowY = this.nativeWindow.y;
+		config.data.windowWidth = this.nativeWindow.width;
+		config.data.windowHeight = this.nativeWindow.height;
+		config.flush();
 	}
-}
-*/
-public function onAppExit(event:Event):void { 
-	config.data.windowX = this.nativeWindow.x;
-	config.data.windowY = this.nativeWindow.y;
-	config.data.windowWidth = this.nativeWindow.width;
-	config.data.windowHeight = this.nativeWindow.height;
-	config.flush();
-	
 	pluginHost.closeAllWindows();	
 }
 

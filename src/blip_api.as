@@ -1,7 +1,11 @@
-/**********************************************************/
-import com.suda.AS3BlipLib.objects.BlipAvatar;
 import com.suda.plugins.PluginEvent;
 
+import flash.events.Event;
+import flash.net.URLLoader;
+import flash.net.URLRequest;
+import flash.net.URLVariables;
+
+/**********************************************************/
 /*********** OBSŁUGA API                        ***********/
 /**********************************************************/
 public function onGetBliposphere(event:BlipResultEvent):void {
@@ -35,7 +39,7 @@ public function onGetDashboard(event:BlipResultEvent):void {
 	
 	if (!hasFocus && !userNotificated) {
 		for each(var update:* in event.data) {
-			if (BlipUpdate.UPDATE_TYPE_DM == update.type) {
+			if ((BlipUpdate.UPDATE_TYPE_DM == update.type) && (update.user.login != config.data.loginUsername)) {
 				unreadDms++;	
 			}
 		}
@@ -84,7 +88,7 @@ public function addPicturesLinks(updates):void {
 	for each (var update in updates) {
 		if (null != update.pictures) {
 			for each (var picture in update.pictures) {
-				update.htmlBody += ' <a href="'+picture.url+'"><font color="#777777"><b>[Obrazek]</b></font></a>';	
+				update.htmlBody += ' <a href="'+picture.url+'" class="plugin">[Obrazek]</a>';	
 			}
 		}		
 	}
@@ -92,25 +96,7 @@ public function addPicturesLinks(updates):void {
 
 public function onGetSubs(event:BlipResultEvent):void {
 	var subscriptions:* = event.data;
-	/* 
-	if (0 < subscriptions.length) {
-		for each (var subscription:BlipSubscription in subscriptions) {						
-			if (!usersQueue.contains(subscription.trackingUserPath)) {
-				api.GetUserByPath(subscription.trackingUserPath);
-				usersQueue.addItem(subscription.trackingUserPath);										
-			} else {					
-				subscriptions.setAllBy('trackingUserPath', subscription.trackingUserPath, 'trackingUser', users.getBy('userPath', subscription.trackingUserPath));	
-			}
-			
-			if (!usersQueue.contains(subscription.trackedUserPath)) {
-				api.GetUserByPath(subscription.trackedUserPath);
-				usersQueue.addItem(subscription.trackedUserPath);										
-			} else {					
-				subscriptions.setAllBy('trackedUserPath', subscription.trackedUserPath, 'trackedUser', users.getBy('userPath', subscription.trackedUserPath));	
-			}	
-		}	
-	}
-	*/
+
 	cacheSubscriptionsAvatars(subscriptions);
 	
 	Subscriptions = subscriptions;
@@ -118,35 +104,6 @@ public function onGetSubs(event:BlipResultEvent):void {
 	lstSubscriptions.dataProvider = Subscriptions;
 }
 
-/*
-public function onGetUser(event:BlipResultEvent):void {
-	var dashboard:* = lstBlipLog.dataProvider;
-	var subscriptions:CustomArrayCollection = Subscriptions;
-	var user:* = event.data;
-	users.addItem(user);
-	dashboard.setAllBy('userPath', user.userPath, 'user', user);
-	dashboard.setAllBy('recipientPath', user.userPath, 'recipient', user);
-	subscriptions.setAllBy('trackingUserPath', user.userPath, 'trackingUser', user);
-	subscriptions.setAllBy('trackedUserPath', user.userPath, 'trackedUser', user); 
-	fetchAvatar(user);
-}
- 
-public function onGetAvatar(event:BlipResultEvent):void {
-	var avatar:* = event.data;
-	
-	//avatar.url30 = cacheAvatar(avatar.url30);
-	//var avatarUrl90:String = cacheAvatar(avatar.url90, 0);
-	var avatarUrl:String = cacheAvatar(avatar.url30, avatar.id);
-	if ('' == avatarUrl) {
-		avatar.url30 = 'app:/img/not_logged30.png';
-	} else {
-		avatar.url30 = avatarUrl;	
-	}
-	
-	avatars.addItem(avatar);
-	users.setAllBy('avatarPath', event.path, 'avatar', avatar);	
-}
-*/
 public function onSendUpdate(event:BlipResultEvent):void {
 	taStatus.enabled = true;
 	taStatus.text = '';
@@ -160,4 +117,51 @@ public function onSendUpdate(event:BlipResultEvent):void {
 	} else if ('bliposphere' == currentState) {
 		api.GetBliposphere();
 	}	
+}
+
+/**********************************************************/
+/*********** OBSŁUGA WWW BLIPA                  ***********/
+/**********************************************************/
+public var authenticityToken:String = '';
+public var blipPlLoader:URLLoader = new URLLoader();
+public var blipPlRequest:URLRequest
+public function getBlipPl():void {
+	blipPlRequest = new URLRequest('http://www.blip.pl/');
+	
+	blipPlRequest.manageCookies = true;
+	
+	blipPlLoader.addEventListener(Event.COMPLETE, onGetBlipPl);
+	blipPlLoader.load(blipPlRequest);	
+}
+
+public function onGetBlipPl(event:Event):void {
+	var matches:Array = event.target.data.toString().match(/value\=\"([0-9|a-f]*)\"/); 
+	if (0 < matches.length) {
+		authenticityToken = matches[1];
+		blipPlLoader.removeEventListener(Event.COMPLETE, onGetBlipPl);
+		loginToBlipPl();	
+	}	
+}
+
+public function loginToBlipPl():void {
+	blipPlRequest.url = 'http://www.blip.pl/sessions';
+	var variables:URLVariables = new URLVariables();
+	
+	blipPlRequest.method = URLRequestMethod.POST;
+	// Odszyfrowanie hasła
+	cypherData = Hex.toArray(config.data.loginPasswd);
+	cypher.decrypt(cypherData);
+	
+	//variables.logging_in_user = { login: config.data.loginUsername, password: Hex.toString(Hex.fromArray(cypherData))};
+	//variables.logging_in_user = { login: 'kicztv', password: 'proste21', remember: 1};
+	variables.authenticity_token = authenticityToken;
+	Debug.log(authenticityToken);
+	blipPlRequest.data = variables;
+	
+	blipPlLoader.addEventListener(Event.COMPLETE, onLoginToBlipPl);
+	blipPlLoader.load(blipPlRequest);
+}
+
+public function onLoginToBlipPl(event:Event):void {
+	Debug.log(event.target.data);
 }

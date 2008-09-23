@@ -210,7 +210,7 @@ TabNavigator {
 
 TextArea {
    fontFamily: Arial;
-   fontSize: 10;
+   fontSize: 12;
    color: #0b333c;
    fontWeight: normal;
    paddingLeft: 2;

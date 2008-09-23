@@ -1,0 +1,4 @@
+body { color: #ffffff; font-family: Arial; font-size: 12px; font-weight: normal; }
+a { color: #777777; text-decoration: none; }
+a:hover { text-decoration: underline; }
+a.login, a.plugin { font-weight:bold; }

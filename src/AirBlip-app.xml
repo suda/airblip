@@ -24,7 +24,7 @@
 	<name>AirBlip</name>
 
 	<!-- An application version designator (such as "v1", "2.5", or "Alpha 1"). Required. -->
-	<version>Beta build 7.18.1439</version>
+	<version>Beta build 9.23.1103</version>
 
 	<!-- Description, displayed in the AIR application installer. Optional. -->
 	<description>Klient serwisu Blip.pl</description>

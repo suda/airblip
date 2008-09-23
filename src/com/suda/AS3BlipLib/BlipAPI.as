@@ -13,6 +13,7 @@ package com.suda.AS3BlipLib
 	
 	import flash.events.*;
 	import flash.net.*;
+	import flash.utils.*;
 	
 	[Event(name="onGetBliposphere", type="com.suda.AS3BlipLib.events.BlipResultEvent")]
 	[Event(name="onGetDashboard", type="com.suda.AS3BlipLib.events.BlipResultEvent")]
@@ -590,7 +591,8 @@ package com.suda.AS3BlipLib
 			
 			var urlRequest:URLRequest;
             urlRequest = getURLRequest("/updates", URLRequestMethod.POST, null);
-            urlRequest.data = "update[body]="+text;
+            urlRequest.data = "update[body]="+escapeMultiByte(text);
+            
             
             if (null == file) {
             	var urlLoader:DynamicURLLoader = getURLLoader();
